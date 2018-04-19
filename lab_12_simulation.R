@@ -14,12 +14,17 @@ run_simulation = function(n_trials, n, p, cutoff) {
     data = generate_data(n, p)
     p.values = c(p.values, as.vector(model_select(data$covariates, data$responses, cutoff)))
   }
+  save(p.values, file="sim_p_values.Rdata")
+}
+
+make_plot = function(datapath) {
+  load(datapath) # load the saved p-values, then plot the histogram for n and p
   hist(p.values, xlab="p-values", main=paste("n = ", n, ", p = ", p, sep=''))
 }
 
-par(mfrow=c(3,3), mar=c(4,4,4,2))
+par(mfrow=c(3,3), mar=c(4,4,4,2)) # plot histograms for all combinations
 for (n in c(100, 1000, 10000)) {
   for (p in c(10, 20, 50)) {
-    run_simulation(100, n, p, 0.05)
+    make_plot("sim_p_values.Rdata")
   }
 }
